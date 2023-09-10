@@ -44,19 +44,21 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
 
             max_val = max(val1, val2, val3)
 
-            #print(max_val)
-
             if max_val < 0:  #if the largest number of the 3 is still negative, then that cell in the matrix gets set = 0
                 max_val = 0
 
+            print(max_val)
+
             dp_table[i][j] = max_val
 
-            if max_val == val1: #meaning it is a match OR mismatch
+            if max_val == dp_table[i - 1][j - 1] + match: #meaning it is a match
                 match_table[i][j] == "diag"
             elif max_val == val2: #Mi-1,j + gap
                 match_table[i][j] == "left"
             elif max_val == val3: #Mi,j-1 + gap
                 match_table[i][j] == "up"
+            else:
+                match_table[i][j] == 0
 
 
     print(match_table, "\n")
