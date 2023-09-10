@@ -7,7 +7,7 @@
 import re
 
 
-def score(dp_table, seq1, seq2, seq1_len, seq2_len): #this function fills out the DP table
+def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function fills out the DP table
     print("Please enter gap penalty:")
     gap = int(input())
     #print(gap)
@@ -51,6 +51,18 @@ def score(dp_table, seq1, seq2, seq1_len, seq2_len): #this function fills out th
 
             dp_table[i][j] = max_val
 
+            if max_val == val1: #meaning it is a match OR mismatch
+                match_table[i][j] == "diag"
+            elif max_val == val2: #Mi-1,j + gap
+                match_table[i][j] == "left"
+            elif max_val == val3: #Mi,j-1 + gap
+                match_table[i][j] == "up"
+
+
+    print(match_table, "\n")
+
+    #Therefore, when doing the traceback, you're only looking at celels that have a "4", meaning the sequences match at that index
+
     print(dp_table)
 
     #find max value in DP table
@@ -79,17 +91,16 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     #And once one of the 3 values is 0, end at that square and DON'T count that base in the alignment (if it comes before index (0,0))
 
 
-    for i in range(x, 0): #don't want to start beyond the index of the max value
-        for j in range(y, 0): #same deal, only want to move backwards
+    """for i in range(x, 0, -1): #don't want to start beyond the index of the max value
+        for j in range(y, 0, -1): #same deal, only want to move backwards
             #Also, want to extract the base at that index in the sequence and store in an array or smthn
             #BUT, recall that the sequence indices will be x-1 and y-1
             #So if the max value is at index (2,2) in the DP table,
             #then the matching base will occur at index (1,1) in the sequence
             #yeah, that's right. good god
 
-            #FIX THIS!!! Nothing in my for loop is printing whyyyyyyy
-            print(seq1[i])
-            #print(max(dp_table[i-1][j-1], dp_table[i-1][j], dp_table[i][j-1]))
+            #print(i, j)
+            #print(max(dp_table[i-1][j-1], dp_table[i-1][j], dp_table[i][j-1]))"""
 
 
 
@@ -125,8 +136,10 @@ seq2_len = len(seq2)
 align_table = [[0 for i in range(seq1_len + 1)] for j in range(seq2_len + 1)]  #initialize table to all zeros
 #print(align_table)
 
+match_table = [[0 for i in range(seq1_len + 1)] for j in range(seq2_len + 1)]
+
 #Call "score" function to fill out the DP table:
-score(align_table, seq1, seq2, seq1_len, seq2_len)
+score(align_table, match_table, seq1, seq2, seq1_len, seq2_len)
 
 #Now I need to write a function that does the traceback, but I think I figured that out...
 #it seems to be
