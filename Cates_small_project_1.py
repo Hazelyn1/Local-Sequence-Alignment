@@ -25,6 +25,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq1[i - 1] == seq2[j - 1]:
                 val1 = dp_table[i - 1][j - 1] + match
+                match_table[i][j] == val1
 
             else:  #meaning it's a mismatch
                 val1 = dp_table[i - 1][j - 1] + mismatch
@@ -47,10 +48,11 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             if max_val < 0:  #if the largest number of the 3 is still negative, then that cell in the matrix gets set = 0
                 max_val = 0
 
-            print(max_val)
+            print("Max value of %d, %d = %d" % (i, j, max_val))
 
             dp_table[i][j] = max_val
 
+            #FIX THIS!!!! It's not populating the "match_table" variable :/
             if max_val == dp_table[i - 1][j - 1] + match: #meaning it is a match
                 match_table[i][j] == "diag"
             elif max_val == val2: #Mi-1,j + gap
@@ -92,9 +94,19 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     #and pick the max of those 3
     #And once one of the 3 values is 0, end at that square and DON'T count that base in the alignment (if it comes before index (0,0))
 
+    #Character list to hold to aligned bases:
+    aligned_seq = list()
+    #Lists to keep track of the indices where the matches occurred in each sequence
+    seq1_bases = list()
+    seq2_bases = list()
 
-    """for i in range(x, 0, -1): #don't want to start beyond the index of the max value
+    for i in range(x, 0, -1): #don't want to start beyond the index of the max value
         for j in range(y, 0, -1): #same deal, only want to move backwards
+            if match_table[i, j] == "diag":
+                #Record the index the match occurred in each sequence:
+                seq1_bases = seq1_bases.append(i)
+                seq2_bases = seq2_bases.append(j)
+
             #Also, want to extract the base at that index in the sequence and store in an array or smthn
             #BUT, recall that the sequence indices will be x-1 and y-1
             #So if the max value is at index (2,2) in the DP table,
@@ -102,7 +114,22 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
             #yeah, that's right. good god
 
             #print(i, j)
-            #print(max(dp_table[i-1][j-1], dp_table[i-1][j], dp_table[i][j-1]))"""
+            #print(max(dp_table[i-1][j-1], dp_table[i-1][j], dp_table[i][j-1]))
+
+            #Make sure to append any aligning base to the FRONT of the list since the traceback starts at the end
+            aligned_seq[:0] = seq1[i] #since the bases match, it doesn't matter which sequence you reference for the base
+            print(aligned_seq)
+
+    print("The original sequences:")
+    print("S1: ", seq1)
+    print("S2: ", seq2)
+
+    print("The aligned sequence is:")
+    print(aligned_seq)
+
+    print("Occurring at indices:")
+    print(seq1_bases, " in sequence 1 and indices")
+    print(seq1_bases, " in sequence 2.")
 
 
 
