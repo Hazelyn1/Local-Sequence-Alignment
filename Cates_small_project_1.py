@@ -20,8 +20,12 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
     mismatch = int(input())
     #print(mismatch)
 
+    #FIX THIS!!! I'm getting an out of range error at line 44 and I think I know why...
+    #It only occurs when the sequences are NOT the same length
+    #So I can't figure out which loop, outer or inner, needs to iterate through the longer sequence or if it even makes a difference
     for i in range(1, seq1_len + 1):
         for j in range(1, seq2_len + 1):
+            #print(seq1[i-1], seq2[j-1])
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq1[i - 1] == seq2[j - 1]:
                 val1 = dp_table[i - 1][j - 1] + match
@@ -132,10 +136,11 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     print(sorted(seq2_bases), " in sequence 2.")
 
     #Call the function that calculates the score of the alignment:
-    calculate_score()
+    #calculate_score()
 
 
-def calculate_score():
+"""def calculate_score(dp_table, match_table, seq1, seq2, seq1_bases, seq2_bases):
+    for i in range()"""
 
 
 #First, get the user input:
