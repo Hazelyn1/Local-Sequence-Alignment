@@ -22,8 +22,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
 
     
     for i in range(1, seq2_len + 1):
-        for j in range(1, seq1_len + 1): #WAIT A MINUTE, this is only iterating 10 times, which is NOT enough to cover all of seq1
-                                         #So that's a problem and probably why I'm getting an "out of bounds" error on line 48...
+        for j in range(1, seq1_len + 1): 
             #print(seq1[i-1], seq2[j-1])
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq2[i - 1] == seq1[j - 1]:
@@ -55,7 +54,8 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
 
             dp_table[i][j] = max_val
 
-            #FIX THIS!!! This isn't populating the table correctly...
+            #FIX THIS!!! This isn't populating the table correctly...like it's giving "diag" when it should give a "left"
+            #This is obviously a problem b/c it messes up the traceback, indicating a match when it really isn't one
             if max_val == dp_table[i - 1][j - 1] + match: #meaning it is a match
                 match_table[i][j] = "diag"
             elif max_val == val2: #Mi-1,j + gap
