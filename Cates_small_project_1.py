@@ -20,8 +20,8 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
     mismatch = int(input())
     #print(mismatch)
 
-    for i in range(1, seq2_len + 1):
-        for j in range(1, seq1_len + 1):
+    for i in range(1, seq2_len + 1): #rows
+        for j in range(1, seq1_len + 1): #columns
             #print(seq1[j-1], seq2[i-1])
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq2[i - 1] == seq1[j - 1]:
@@ -37,6 +37,13 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             #And once all 3 values are calculated, the index i,j in the matrix gets populated w/ the max of the 3
             #Or zero if none of the values are positive (i.e. the max is still a negative number)
 
+            #FIX THIS!!!! You know what, I think the issue here is my indices
+            #Like, my i and j are switched
+            #B/c for example, row 2, column 3 has a max value of six and should be a left arrow
+            #where the value comes from the same row but the previous column
+            #BUT, with the way I have my loop set up, j = seq1 (columns) and i = seq2 (rows)
+            #So it's being interpreted as the opposite, so i should be j and j should be i
+
             #Checking second condition of Mi-1,j - gap:
             val2 = dp_table[i - 1][j] + gap
             #print(val2)
@@ -49,12 +56,15 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             if max_val < 0:  #if the largest number of the 3 is still negative, then that cell in the matrix gets set = 0
                 max_val = 0
 
-            #print("Max value of %d of seq2, %d of seq1 = %d" % (i, j, max_val))
+            #print("Max value of row %d of seq2, column %d of seq1 = %d" % (i, j, max_val))
 
-            dp_table[i][j] = max_val
+            dp_table[i][j] = max_val #all the numbers are correct, it's "match_table" that's wrong...
 
             #FIX THIS!!! This isn't populating the table correctly...like it's giving "diag" when it should give a "left"
             #This is obviously a problem b/c it messes up the traceback, indicating a match when it really isn't one
+            #It starts to screw up half-way through row 2 at column 3
+            #At that point, the "left" and the "up" get switched
+            #And I think it's connected to the "val2", "val3" stuff above, see comments on lines 40-45
             if seq2[i - 1] == seq1[j - 1]: #meaning it is a match
                 match_table[i][j] = "diag"
             elif max_val == val2: #Mi-1,j + gap
@@ -62,7 +72,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             elif max_val == val3: #Mi,j-1 + gap
                 match_table[i][j] = "up"
             else:
-                match_table[i][j] = "mismatch"
+                match_table[i][j] = 0
 
 
 
@@ -113,19 +123,26 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
 
                 #FIX THIS!!!! It's not appending the correct bases!!
                 aligned_seq[:0] = seq1[i - 1]  #since the bases match, it doesn't matter which sequence you reference for the nucleotide
-
-                break #once a diag is found, break out of the INNER loop and decrement i
+                i = i - 1 #move up one row
+                j = j - 1 #move left one column and start from there
+                print(i, j) #FIX THIS!!! Why is it not decrementing j???
+                #Now in this new index, check the arrow
+                #NOTE: only
 
             elif match_table[i][j] == "up": #NOT a match, stay in same column, go to previous row
                 #decrement j and keep going
-                j -= 1
+                i -= 1
+                continue
 
             elif match_table[i][j] == "left": #NOT a match, go to previous column, stay in same row
                 #decrement i
-                    i -= 1
+                j -= 1
+                continue
 
             elif match_table[i][j] == "mismatch":
-                break
+                i = i - 1
+                j = j - 1
+                continue
 
 
             if match_table[i][j] == 0: #meaning it's the end of the alignment
