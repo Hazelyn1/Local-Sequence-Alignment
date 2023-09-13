@@ -20,15 +20,13 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
     mismatch = int(input())
     #print(mismatch)
 
-    #FIX THIS!!! I'm getting an out of range error at line 44 and I think I know why...
-    #It only occurs when the sequences are NOT the same length
-    #So I can't figure out which loop, outer or inner, needs to iterate through the longer sequence or if it even makes a difference
     for i in range(1, seq2_len + 1):
         for j in range(1, seq1_len + 1):
             #print(seq1[i-1], seq2[j-1])
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq2[i - 1] == seq1[j - 1]:
                 val1 = dp_table[i - 1][j - 1] + match
+                print("There is a match at index %d in seq2 and index %d in seq1" % (i, j))
 
             else:  #meaning it's a mismatch
                 val1 = dp_table[i - 1][j - 1] + mismatch
