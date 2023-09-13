@@ -56,7 +56,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             #FIX THIS!!! This isn't populating the table correctly...like it's giving "diag" when it should give a "left"
             #This is obviously a problem b/c it messes up the traceback, indicating a match when it really isn't one
             #But I wonder if there's a different way to do this...like use a different way of labeling the cells, like 1, 2, 3 or smthn
-            if max_val == dp_table[i - 1][j - 1] + match: #meaning it is a match
+            if seq2[i - 1] == seq1[j - 1]: #meaning it is a match
                 match_table[i][j] = "diag"
             elif max_val == val2: #Mi-1,j + gap
                 match_table[i][j] = "left"
