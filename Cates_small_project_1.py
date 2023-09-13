@@ -22,7 +22,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
 
     for i in range(1, seq2_len + 1):
         for j in range(1, seq1_len + 1):
-            #print(seq1[i-1], seq2[j-1])
+            #print(seq1[j-1], seq2[i-1])
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq2[i - 1] == seq1[j - 1]:
                 val1 = dp_table[i - 1][j - 1] + match
@@ -49,13 +49,12 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             if max_val < 0:  #if the largest number of the 3 is still negative, then that cell in the matrix gets set = 0
                 max_val = 0
 
-            #print("Max value of %d, %d = %d" % (i, j, max_val))
+            #print("Max value of %d of seq2, %d of seq1 = %d" % (i, j, max_val))
 
             dp_table[i][j] = max_val
 
             #FIX THIS!!! This isn't populating the table correctly...like it's giving "diag" when it should give a "left"
             #This is obviously a problem b/c it messes up the traceback, indicating a match when it really isn't one
-            #But I wonder if there's a different way to do this...like use a different way of labeling the cells, like 1, 2, 3 or smthn
             if seq2[i - 1] == seq1[j - 1]: #meaning it is a match
                 match_table[i][j] = "diag"
             elif max_val == val2: #Mi-1,j + gap
@@ -63,7 +62,8 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             elif max_val == val3: #Mi,j-1 + gap
                 match_table[i][j] = "up"
             else:
-                match_table[i][j] = 0
+                match_table[i][j] = "mismatch"
+
 
 
     print(match_table, "\n")
@@ -107,12 +107,29 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
         for j in range(y, 0, -1): #same deal, only want to move backwards
             if match_table[i][j] == "diag":
                 #Record the index the match occurred in each sequence:
-                seq1_bases.append(i-1)
-                seq2_bases.append(j-1)
+                seq1_bases.append(j-1)
+                seq2_bases.append(i-1)
                 #Make sure to append any aligning base to the FRONT of the list since the traceback starts at the end
-                aligned_seq[:0] = seq1[i - 1]  # since the bases match, it doesn't matter which sequence you reference for the nucleotide
+
+                #FIX THIS!!!! It's not appending the correct bases!!
+                aligned_seq[:0] = seq1[i - 1]  #since the bases match, it doesn't matter which sequence you reference for the nucleotide
+
                 break #once a diag is found, break out of the INNER loop and decrement i
 
+            elif match_table[i][j] == "up": #NOT a match, stay in same column, go to previous row
+                #decrement j and keep going
+                j -= 1
+
+            elif match_table[i][j] == "left": #NOT a match, go to previous column, stay in same row
+                #decrement i
+                    i -= 1
+
+            elif match_table[i][j] == "mismatch":
+                break
+
+
+            if match_table[i][j] == 0: #meaning it's the end of the alignment
+                break
                 #print(seq1_bases, seq2_bases)
 
                 #IMPORTANT!!!!!
@@ -133,7 +150,9 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
             #print(i, j)
             #print(max(dp_table[i-1][j-1], dp_table[i-1][j], dp_table[i][j-1]))
 
-
+    #These tell you which indices of sequences 2 and 1 (respectively) the matches occur at
+    print(seq1_bases)
+    print(seq2_bases)
 
 
     print("\nOriginal sequences:")
@@ -174,7 +193,7 @@ seq2 = seq2.upper()
 #Check to make sure that sequence 2 is valid:
 if re.search(r'[^ATCG]', seq2):  # checks if any characters BESIDES A, T, C or G are present in sequence 1
     print("Input sequence 2 is not valid. Please restart with valid sequence.")
-    exit(1)
+    exit(1) #if sequence is invalid, exit program and start again
 
 #Find length of each sequence:
 seq1_len = len(seq1)
