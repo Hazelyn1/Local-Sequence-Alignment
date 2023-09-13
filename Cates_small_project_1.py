@@ -20,14 +20,15 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
     mismatch = int(input())
     #print(mismatch)
 
-    
+    #FIX THIS!!! I'm getting an out of range error at line 44 and I think I know why...
+    #It only occurs when the sequences are NOT the same length
+    #So I can't figure out which loop, outer or inner, needs to iterate through the longer sequence or if it even makes a difference
     for i in range(1, seq2_len + 1):
-        for j in range(1, seq1_len + 1): 
+        for j in range(1, seq1_len + 1):
             #print(seq1[i-1], seq2[j-1])
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq2[i - 1] == seq1[j - 1]:
                 val1 = dp_table[i - 1][j - 1] + match
-                match_table[i][j] == val1
 
             else:  #meaning it's a mismatch
                 val1 = dp_table[i - 1][j - 1] + mismatch
@@ -56,6 +57,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
 
             #FIX THIS!!! This isn't populating the table correctly...like it's giving "diag" when it should give a "left"
             #This is obviously a problem b/c it messes up the traceback, indicating a match when it really isn't one
+            #But I wonder if there's a different way to do this...like use a different way of labeling the cells, like 1, 2, 3 or smthn
             if max_val == dp_table[i - 1][j - 1] + match: #meaning it is a match
                 match_table[i][j] = "diag"
             elif max_val == val2: #Mi-1,j + gap
@@ -109,6 +111,20 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
                 #Record the index the match occurred in each sequence:
                 seq1_bases.append(i-1)
                 seq2_bases.append(j-1)
+                #Make sure to append any aligning base to the FRONT of the list since the traceback starts at the end
+                aligned_seq[:0] = seq1[i - 1]  # since the bases match, it doesn't matter which sequence you reference for the nucleotide
+                break #once a diag is found, break out of the INNER loop and decrement i
+
+                #print(seq1_bases, seq2_bases)
+
+                #IMPORTANT!!!!!
+                #PROBLEM: for each run through the loop, there can only be ONE match.
+                #Meaning, if sequence 2 (vertical) has an A as the last base (since it works from the bottom up)
+                #Then it can only match to ONE 'A' in sequence 1 (horizontal) b/c you CAN'T match one base to two bases in an alignment
+                #So a "diag" at j = 5 can only match the FIRST (technically the last) "A" it finds in sequence 1.
+                #So once a match is found, it has to decrement to the next column even if it didn't get through all the rows
+                #UPDATE: RESOLVED: added a "break" to the inner loop
+
 
             #Also, want to extract the base at that index in the sequence and store in an array or smthn
             #BUT, recall that the sequence indices will be x-1 and y-1
@@ -119,8 +135,7 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
             #print(i, j)
             #print(max(dp_table[i-1][j-1], dp_table[i-1][j], dp_table[i][j-1]))
 
-            #Make sure to append any aligning base to the FRONT of the list since the traceback starts at the end
-                aligned_seq[:0] = seq1[i-1] #since the bases match, it doesn't matter which sequence you reference for the base
+
 
 
     print("\nOriginal sequences:")
@@ -130,9 +145,9 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     print("The aligned sequence is:")
     print(aligned_seq)
 
-    print("Occurring at indices ", end="")
+    """print("Occurring at indices ", end="")
     print(sorted(seq1_bases), " in sequence 1 and indices ", end="")
-    print(sorted(seq2_bases), " in sequence 2.")
+    print(sorted(seq2_bases), " in sequence 2.")"""
 
     #Call the function that calculates the score of the alignment:
     #calculate_score()
