@@ -26,7 +26,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             #Checking first condition of Mi-1,j-1 + s(aij), which calculates val1:
             if seq2[i - 1] == seq1[j - 1]:
                 val1 = dp_table[i - 1][j - 1] + match
-                print("There is a match at index %d in seq2 and index %d in seq1" % (i, j))
+                #print("There is a match at index %d in seq2 and index %d in seq1" % (i, j))
 
             else:  #meaning it's a mismatch
                 val1 = dp_table[i - 1][j - 1] + mismatch
