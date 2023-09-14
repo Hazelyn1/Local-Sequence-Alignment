@@ -160,6 +160,7 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
                 if dp_table == 0: #meaning it's the end of the alignment
                     break
                 else:
+                    score += dp_table[i][j]
                     i = i - 1
                     j = j - 1
                     continue
