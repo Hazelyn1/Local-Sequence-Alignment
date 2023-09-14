@@ -112,6 +112,8 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
             seq1_bases.append(y - 1)
             seq2_bases.append(x - 1)
 
+            aligned_seq[:0] = seq1[y - 1] #add the base to the aligned sequence (doesn't matter which seq you take from since base is the same)
+
             score += match_table[x][y]
             x -= 1
             y -= 1
