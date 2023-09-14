@@ -113,6 +113,9 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     seq1_bases = list()
     seq2_bases = list()
 
+    #keep track of the alignment score:
+    score = 0
+
     for i in range(x, 0, -1): #don't want to start beyond the index of the max value
         for j in range(y, 0, -1): #same deal, only want to move backwards
             if match_table[i][j] == "diag":
@@ -126,28 +129,40 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
                 i = i - 1 #move up one row
                 j = j - 1 #move left one column and start from there
                 print(i, j) #FIX THIS!!! Why is it not decrementing j???
+
+                if dp_table == 0: #meaning it's the end of the alignment
+                    break
+                else:
+                    score += dp_table[i][j]
+
                 #Now in this new index, check the arrow
                 #NOTE: only
 
             elif match_table[i][j] == "up": #NOT a match, stay in same column, go to previous row
                 #decrement j and keep going
-                i -= 1
-                continue
+                if dp_table == 0: #meaning it's the end of the alignment
+                    break
+                else:
+                    score += dp_table[i][j]
+                    i -= 1
+                    continue
 
             elif match_table[i][j] == "left": #NOT a match, go to previous column, stay in same row
-                #decrement i
-                j -= 1
-                continue
+                if dp_table == 0: #meaning it's the end of the alignment
+                    break
+                else:
+                    score += dp_table[i][j]
+                    #decrement i
+                    j -= 1
+                    continue
 
-            elif match_table[i][j] == "mismatch":
-                i = i - 1
-                j = j - 1
-                continue
-
-
-            if match_table[i][j] == 0: #meaning it's the end of the alignment
-                break
-                #print(seq1_bases, seq2_bases)
+            elif match_table[i][j] == 0:
+                if dp_table == 0: #meaning it's the end of the alignment
+                    break
+                else:
+                    i = i - 1
+                    j = j - 1
+                    continue
 
                 #IMPORTANT!!!!!
                 #PROBLEM: for each run through the loop, there can only be ONE match.
@@ -171,6 +186,7 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     print(seq1_bases)
     print(seq2_bases)
 
+    print("Alignment score = %d", score)
 
     print("\nOriginal sequences:")
     print("S1: ", seq1)
