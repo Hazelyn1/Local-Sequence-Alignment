@@ -45,11 +45,9 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             #So it's being interpreted as the opposite, so i should be j and j should be i
 
             #Checking second condition of Mi-1,j - gap:
-            val2 = dp_table[i - 1][j] + gap
-            #print(val2)
+            val2 = dp_table[i][j - 1] + gap
 
-            val3 = dp_table[i][j - 1] + gap
-            #print(val3)
+            val3 = dp_table[i - 1][j] + gap
 
             max_val = max(val1, val2, val3)
 
@@ -60,21 +58,14 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
 
             dp_table[i][j] = max_val #all the numbers are correct, it's "match_table" that's wrong...
 
-            #FIX THIS!!! This isn't populating the table correctly...like it's giving "diag" when it should give a "left"
-            #This is obviously a problem b/c it messes up the traceback, indicating a match when it really isn't one
-            #It starts to screw up half-way through row 2 at column 3
-            #At that point, the "left" and the "up" get switched
-            #And I think it's connected to the "val2", "val3" stuff above, see comments on lines 40-45
             if seq2[i - 1] == seq1[j - 1]: #meaning it is a match
                 match_table[i][j] = "diag"
             elif max_val == val2: #Mi-1,j + gap
                 match_table[i][j] = "left"
             elif max_val == val3: #Mi,j-1 + gap
                 match_table[i][j] = "up"
-            else:
+            else: #mismatch
                 match_table[i][j] = 0
-
-
 
     print(match_table, "\n")
 
@@ -116,7 +107,16 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     #keep track of the alignment score:
     score = 0
 
-    for i in range(x, 0, -1): #don't want to start beyond the index of the max value
+    while dp_table[x][y] != 0:
+        if match_table[x][y] == "diag":
+            seq1_bases.append(y - 1)
+            seq2_bases.append(x - 1)
+
+            score += match_table[x][y]
+            x -= 1
+            y -= 1
+
+    """for i in range(x, 0, -1): #don't want to start beyond the index of the max value
         for j in range(y, 0, -1): #same deal, only want to move backwards
             if match_table[i][j] == "diag":
                 #Record the index the match occurred in each sequence:
@@ -160,10 +160,10 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
                 if dp_table == 0: #meaning it's the end of the alignment
                     break
                 else:
-                    score += dp_table[i][j]
                     i = i - 1
                     j = j - 1
-                    continue
+                    score +=  dp_table[i][j]
+                    continue"""
 
                 #IMPORTANT!!!!!
                 #PROBLEM: for each run through the loop, there can only be ONE match.
@@ -199,13 +199,6 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     """print("Occurring at indices ", end="")
     print(sorted(seq1_bases), " in sequence 1 and indices ", end="")
     print(sorted(seq2_bases), " in sequence 2.")"""
-
-    #Call the function that calculates the score of the alignment:
-    #calculate_score()
-
-
-"""def calculate_score(dp_table, match_table, seq1, seq2, seq1_bases, seq2_bases):
-    for i in range()"""
 
 
 #First, get the user input:
