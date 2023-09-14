@@ -186,7 +186,7 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     print(seq1_bases)
     print(seq2_bases)
 
-    print("Alignment score = %d", score)
+    print("Alignment score = %d" % score)
 
     print("\nOriginal sequences:")
     print("S1: ", seq1)
