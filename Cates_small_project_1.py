@@ -107,16 +107,45 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     #keep track of the alignment score:
     score = 0
 
-    while dp_table[x][y] != 0:
-        if match_table[x][y] == "diag":
+    while dp_table[x][y] != 0: #go until a score of 0 is hit in the dp_table
+        if match_table[x][y] == "diag": #meaning it's a match
             seq1_bases.append(y - 1)
             seq2_bases.append(x - 1)
 
             aligned_seq[:0] = seq1[y - 1] #add the base to the aligned sequence (doesn't matter which seq you take from since base is the same)
 
-            score += match_table[x][y]
+            score += dp_table[x][y]
             x -= 1
             y -= 1
+
+        elif match_table[x][y] == "up": #same column, one row up
+            score += dp_table[x][y] #update score, but don't add base to aligned sequence
+            x -= 1 #go up one row
+
+        elif match_table[x][y] == "left": #same row, one column left
+            score += dp_table[x][y]
+            y -= 1 #go left one column
+
+        else: #when there's a mismatch and match_table[x][y] == 0
+            score += dp_table[x][y]
+            x -= 1
+            y -= 1
+
+    #These tell you which indices of sequences 2 and 1 (respectively) the matches occur at
+    print(seq1_bases)
+    print(seq2_bases)
+
+    print("Alignment score = %d" % score)
+
+    print("\nOriginal sequences:")
+    print("S1: ", seq1)
+    print("S2: ", seq2)
+
+    print("The aligned sequence is:")
+    print(aligned_seq)
+
+
+
 
     """for i in range(x, 0, -1): #don't want to start beyond the index of the max value
         for j in range(y, 0, -1): #same deal, only want to move backwards
@@ -167,13 +196,6 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
                     score +=  dp_table[i][j]
                     continue"""
 
-                #IMPORTANT!!!!!
-                #PROBLEM: for each run through the loop, there can only be ONE match.
-                #Meaning, if sequence 2 (vertical) has an A as the last base (since it works from the bottom up)
-                #Then it can only match to ONE 'A' in sequence 1 (horizontal) b/c you CAN'T match one base to two bases in an alignment
-                #So a "diag" at j = 5 can only match the FIRST (technically the last) "A" it finds in sequence 1.
-                #So once a match is found, it has to decrement to the next column even if it didn't get through all the rows
-                #UPDATE: RESOLVED: added a "break" to the inner loop
 
 
             #Also, want to extract the base at that index in the sequence and store in an array or smthn
@@ -185,18 +207,6 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
             #print(i, j)
             #print(max(dp_table[i-1][j-1], dp_table[i-1][j], dp_table[i][j-1]))
 
-    #These tell you which indices of sequences 2 and 1 (respectively) the matches occur at
-    print(seq1_bases)
-    print(seq2_bases)
-
-    print("Alignment score = %d" % score)
-
-    print("\nOriginal sequences:")
-    print("S1: ", seq1)
-    print("S2: ", seq2)
-
-    print("The aligned sequence is:")
-    print(aligned_seq)
 
     """print("Occurring at indices ", end="")
     print(sorted(seq1_bases), " in sequence 1 and indices ", end="")
