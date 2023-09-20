@@ -93,6 +93,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
 
 
 def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligned sequence starting from the index of the max value
+    #And simutaneously calculates the alignment score
     #to do this, I need look backwards
     #so like, I need to look at the cells at i-1,j-1, i-1,j and i,j-1 from the cell that has the max value
     #and pick the max of those 3
@@ -104,6 +105,9 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     seq1_bases = list()
     seq2_bases = list()
 
+    aligned_seq1 = list()
+    aligned_seq2 = list()
+
     #keep track of the alignment score:
     score = 0
 
@@ -112,7 +116,9 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
             seq1_bases.append(y - 1)
             seq2_bases.append(x - 1)
 
-            aligned_seq[:0] = seq1[y - 1] #add the base to the aligned sequence (doesn't matter which seq you take from since base is the same)
+            aligned_seq1[:0] = seq1[y-1]
+            aligned_seq2[:0] = seq2[x-1]
+            #aligned_seq[:0] = seq1[y - 1] #add the base to the aligned sequence (doesn't matter which seq you take from since base is the same)
 
             score += dp_table[x][y]
             x -= 1
@@ -120,20 +126,33 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
 
         elif match_table[x][y] == "up": #same column, one row up
             score += dp_table[x][y] #update score, but don't add base to aligned sequence
+            aligned_seq1[:0] = "__" #add a gap to sequence 1
+            aligned_seq2[:0] = seq2[x-1]
             x -= 1 #go up one row
 
         elif match_table[x][y] == "left": #same row, one column left
             score += dp_table[x][y]
+            aligned_seq1[:0] = seq1[y-1]
+            aligned_seq2[:0] = "__"
             y -= 1 #go left one column
 
         else: #when there's a mismatch and match_table[x][y] == 0
             score += dp_table[x][y]
+            aligned_seq1[:0] = seq1[y-1]
+            aligned_seq2[:0] = seq2[x-1]
             x -= 1
             y -= 1
 
     #These tell you which indices of sequences 2 and 1 (respectively) the matches occur at
-    print(seq1_bases)
-    print(seq2_bases)
+    #print(seq1_bases)
+    #print(seq2_bases)
+    """
+    #PROBLEM: need to print both sequences in FULL, but need to also align them properly and introduce the necessary gaps
+    for i in range (0, len(seq2)):
+        for j in range(0, len(seq1)):
+            if j != seq1_bases[j]: #if the current index ISN'T included in the alignment
+                aligned_seq1[:0] =
+    """
 
     print("Alignment score = %d" % score)
 
@@ -141,8 +160,16 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
     print("S1: ", seq1)
     print("S2: ", seq2)
 
+    print("\nAligned subsequences:")
+    print("Sequence 1: ", end="")
+    print(aligned_seq1)
+    print("Sequence 2: ", end="")
+    print(aligned_seq2)
+
+    """#The "seq_bases" variables tell me at which indices sequences 1 and 2 match
+    #So s
     print("The aligned sequence is:")
-    print(aligned_seq)
+    print(aligned_seq)"""
 
 
 
