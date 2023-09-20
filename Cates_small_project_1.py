@@ -67,15 +67,15 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len): #this function
             else: #mismatch
                 match_table[i][j] = 0
 
-    print(match_table, "\n")
+    #print(match_table, "\n")
 
     #Therefore, when doing the traceback, you're only looking at cells that have "diag", meaning the sequences match at that index
 
-    print(dp_table)
+    #print(dp_table)
 
     #find max value in DP table
     final_max_val = max(max(i) for i in dp_table)
-    print("Max value in DP table = %d" % final_max_val)
+    #print("Max value in DP table = %d" % final_max_val)
 
     #Extract the index this max value occurs at:
     for i in range(1, seq2_len + 1):
