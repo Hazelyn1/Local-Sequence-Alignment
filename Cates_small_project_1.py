@@ -126,14 +126,14 @@ def traceback(dp_table, x, y, seq1, seq2): #this function traces back the aligne
 
         elif match_table[x][y] == "up": #same column, one row up
             score += dp_table[x][y] #update score, but don't add base to aligned sequence
-            aligned_seq1[:0] = "__" #add a gap to sequence 1
+            aligned_seq1[:0] = "_" #add a gap to sequence 1
             aligned_seq2[:0] = seq2[x-1]
             x -= 1 #go up one row
 
         elif match_table[x][y] == "left": #same row, one column left
             score += dp_table[x][y]
             aligned_seq1[:0] = seq1[y-1]
-            aligned_seq2[:0] = "__"
+            aligned_seq2[:0] = "_"
             y -= 1 #go left one column
 
         else: #when there's a mismatch and match_table[x][y] == 0
