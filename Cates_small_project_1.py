@@ -62,7 +62,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len):
                 y = j #stores  index of sequence 1 (columns)
 
     #Call the traceback function, which finds the aligned subsequence
-    traceback(dp_table, x, y, seq1, seq2)
+    traceback(dp_table, x, y, seq1, seq2, final_max_val)
 
 
 #this function traces back the aligned sequence starting from the index of the max value in the DP table
@@ -80,31 +80,31 @@ def traceback(dp_table, x, y, seq1, seq2):
             aligned_seq1[:0] = seq1[y-1] #add the base to subsequence 1
             aligned_seq2[:0] = seq2[x-1] #add the base to subsequence 2
 
-            score += dp_table[x][y] #update the score according to the current value in the DP table at the given index
+            #score += dp_table[x][y] #update the score according to the current value in the DP table at the given index
             x -= 1 #move up one row
             y -= 1 #move left one column
 
         elif match_table[x][y] == "up": #same column, one row up
-            score += dp_table[x][y] #update score
+            #score += dp_table[x][y] #update score
             aligned_seq1[:0] = "_" #add a gap to subsequence 1
             aligned_seq2[:0] = seq2[x-1] #add base to subsequence 2
             x -= 1 #go up one row
 
         elif match_table[x][y] == "left": #same row, one column left
-            score += dp_table[x][y] #update score
+            #score += dp_table[x][y] #update score
             aligned_seq1[:0] = seq1[y-1] #add base to subsequence 1
             aligned_seq2[:0] = "_" #add gap to subsequence 1
             y -= 1 #go left one column
 
         else: #when there's a mismatch and match_table[x][y] == 0
-            score += dp_table[x][y] #update score
+            #score += dp_table[x][y] #update score
             aligned_seq1[:0] = seq1[y-1] #add base to subsequence 1
             aligned_seq2[:0] = seq2[x-1] #add base to subsequence 2
             x -= 1 #go up one row
             y -= 1 #go left one column
 
     #Print results:
-    print("\nAlignment score = %d" % score)
+    print("\nAlignment score = %d" % final_max_val)
 
     print("\nOriginal sequences:")
     print("S1: ", seq1)
