@@ -104,7 +104,7 @@ def traceback(dp_table, x, y, seq1, seq2, max_val):
             y -= 1 #go left one column
 
     #Print results:
-    print("\nAlignment score = %d" % final_max_val)
+    print("\nAlignment score = %d" % max_val)
 
     print("\nOriginal sequences:")
     print("S1: ", seq1)
