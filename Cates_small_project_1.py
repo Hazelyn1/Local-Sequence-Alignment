@@ -67,7 +67,7 @@ def score(dp_table, match_table, seq1, seq2, seq1_len, seq2_len):
 
 #this function traces back the aligned sequence starting from the index of the max value in the DP table
 #And uses the arrows in the match table to generate the local alignment
-def traceback(dp_table, x, y, seq1, seq2):
+def traceback(dp_table, x, y, seq1, seq2, max_val):
     #Character list to hold to aligned bases of each sequence:
     aligned_seq1 = list()
     aligned_seq2 = list()
