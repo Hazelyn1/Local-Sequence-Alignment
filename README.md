@@ -1,5 +1,6 @@
 # Local-Sequence-Alignment
 Python program that performs local sequence alignment of two DNA sequences, using a dynamic programming approach that is loosely based on the Smith-Waterman algorithm.
+
 The program starts by taking user input for two DNA sequences. If the sequences are too long to be typed in, the program can be easisly adapted to take a file input. It then creates two dynamic programming matrices: one to hold the match scores, called "alignn_table" and another to hold the arrow assignments for each cell (i.e. points to which cell in the matrix that score came from) called "match_table" that is used for tracing back the alignment. Both of these matrices are initialized to all zeros.
 The "score" function is then called, which takes six arguments: (1) the DP table "align_table", (2) the table for traceback "match_table", (3) input sequence 1, (4) input sequence 2, (5) length of sequence 1 and (6) length of sequence 2.
 
